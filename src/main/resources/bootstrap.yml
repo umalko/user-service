@@ -2,7 +2,3 @@
 spring:
   application:
     name: user-service
-
-management.security.enabled: false
-management.health.db.enabled: false
-security.basic.enabled: false

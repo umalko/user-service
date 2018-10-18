@@ -4,16 +4,20 @@ import com.google.common.collect.Lists;
 import com.mavs.userservice.dao.UserRepository;
 import com.mavs.userservice.model.User;
 import com.mavs.userservice.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @Transactional
+@Cacheable(value = "users")
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -30,6 +34,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> findById(Integer id) {
+        log.info("Find user by id: {}", id);
         return userRepository.findById(id);
     }
 
