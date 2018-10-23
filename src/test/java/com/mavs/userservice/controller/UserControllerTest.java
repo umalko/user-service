@@ -24,6 +24,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class UserControllerTest {
 
     private static final String API_URL = "http://localhost:8080/api/v1/users";
+    private static final Integer USER_ID = 1;
+    private static final String USER_BY_ID_URL = API_URL + "/id/" + USER_ID;
 
     @Test
     public void whenFindAllUsers_thenOK() {
@@ -34,9 +36,9 @@ public class UserControllerTest {
     @Test
     public void whenFindById_thenOK() {
         User randomUser = createRandomUser();
-        String userLocation = createUserAsUri(randomUser);
+        createUserAsUri(randomUser);
 
-        Response responseUser = RestAssured.get(userLocation);
+        Response responseUser = RestAssured.get(USER_BY_ID_URL);
         User user = responseUser.getBody().jsonPath().getObject("", User.class);
         assertThat(user).isNotNull();
     }
@@ -84,11 +86,12 @@ public class UserControllerTest {
 
     @Test
     public void whenUpdateUser_thenOk() {
+        cleanUp();
         User randomUser = createRandomUser();
-        String savedUserUrl = createUserAsUri(randomUser);
-        User savedUser = RestAssured.get(savedUserUrl).jsonPath().getObject("", User.class);
+        createUserAsUri(randomUser);
+        User savedUser = RestAssured.get(USER_BY_ID_URL).jsonPath().getObject("", User.class);
 
-        randomUser.setId(savedUser.getId());
+        randomUser.setId(USER_ID);
         randomUser.setName(randomAlphabetic(10));
 
         RestAssured.given()
@@ -96,7 +99,7 @@ public class UserControllerTest {
                 .body(randomUser)
                 .put(API_URL);
 
-        User updatedUser = RestAssured.get(savedUserUrl).jsonPath().getObject("", User.class);
+        User updatedUser = RestAssured.get(USER_BY_ID_URL).jsonPath().getObject("", User.class);
 
         assertThat(updatedUser).isNotEqualTo(savedUser);
         assertThat(updatedUser.getId()).isEqualTo(savedUser.getId());
@@ -106,13 +109,13 @@ public class UserControllerTest {
     @Test
     public void whenDeleteUser_thenOk() {
         User randomUser = createRandomUser();
-        String savedUserUrl = createUserAsUri(randomUser);
-        User savedUser = RestAssured.get(savedUserUrl).jsonPath().getObject("", User.class);
+        createUserAsUri(randomUser);
+        User savedUser = RestAssured.get(USER_BY_ID_URL).jsonPath().getObject("", User.class);
 
         assertThat(savedUser).isNotNull();
 
-        RestAssured.delete(API_URL + "/" + savedUser.getId());
-        Response response = RestAssured.get(savedUserUrl);
+        RestAssured.delete(API_URL + "/" + USER_ID);
+        Response response = RestAssured.get(USER_BY_ID_URL);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
@@ -131,5 +134,12 @@ public class UserControllerTest {
                 .phone(randomAlphabetic(8))
                 .build();
 
+    }
+
+    private void cleanUp() {
+        Response response = RestAssured.get(USER_BY_ID_URL);
+        if (response.getStatusCode() == HttpStatus.OK.value()) {
+            RestAssured.delete(API_URL + "/" + USER_ID);
+        }
     }
 }
