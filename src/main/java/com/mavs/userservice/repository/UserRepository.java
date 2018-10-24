@@ -1,4 +1,4 @@
-package com.mavs.userservice.dao;
+package com.mavs.userservice.repository;
 
 import com.mavs.userservice.model.User;
 import org.springframework.data.repository.CrudRepository;

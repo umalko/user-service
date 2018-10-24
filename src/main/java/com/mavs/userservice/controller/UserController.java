@@ -1,7 +1,6 @@
 package com.mavs.userservice.controller;
 
 import com.google.common.base.Preconditions;
-import com.mavs.userservice.exception.BadRequestException;
 import com.mavs.userservice.exception.ResourceNotFoundException;
 import com.mavs.userservice.exception.ResourceWasNotSavedException;
 import com.mavs.userservice.model.User;
@@ -11,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -30,16 +28,15 @@ public class UserController {
         return userService.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
 
-    @GetMapping("/name/{name}")
-    public User findByName(@PathVariable("name") String name) {
-        return userService.findByName(name).orElseThrow(ResourceNotFoundException::new);
+    @GetMapping("/username/{username}")
+    public User findByName(@PathVariable("username") String username) {
+        return userService.findByName(username).orElseThrow(ResourceNotFoundException::new);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public User save(@RequestBody User user) {
         Preconditions.checkNotNull(user);
-        Optional.ofNullable(user.getName()).orElseThrow(BadRequestException::new);
         return userService.save(user).orElseThrow(ResourceWasNotSavedException::new);
     }
 

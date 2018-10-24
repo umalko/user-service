@@ -48,7 +48,7 @@ public class UserControllerTest {
         User randomUser = createRandomUser();
         createUserAsUri(randomUser);
 
-        Response responseUser = RestAssured.get(API_URL + "/name/" + randomUser.getName());
+        Response responseUser = RestAssured.get(API_URL + "/username/" + randomUser.getName());
         User user = responseUser.getBody().jsonPath().getObject("", User.class);
         assertThat(user).isNotNull();
     }

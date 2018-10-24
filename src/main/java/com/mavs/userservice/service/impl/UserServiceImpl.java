@@ -1,12 +1,11 @@
 package com.mavs.userservice.service.impl;
 
 import com.google.common.collect.Lists;
-import com.mavs.userservice.dao.UserRepository;
 import com.mavs.userservice.model.User;
+import com.mavs.userservice.repository.UserRepository;
 import com.mavs.userservice.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +21,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    @Autowired
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
