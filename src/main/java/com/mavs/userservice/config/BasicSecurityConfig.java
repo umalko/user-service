@@ -3,6 +3,7 @@ package com.mavs.userservice.config;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -19,9 +20,10 @@ import org.springframework.security.web.authentication.session.RegisterSessionAu
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 
+@Profile({"!test"})
 @Configuration
 @EnableWebSecurity
-public class BasicSecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -36,7 +38,7 @@ public class BasicSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
+                    .antMatchers(HttpMethod.POST, "/api/v1/users/**").permitAll()
                     .anyRequest().authenticated()
                 .and()
                     .httpBasic()
