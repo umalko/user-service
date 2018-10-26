@@ -20,7 +20,7 @@ public class User {
     private Integer id;
     private String email;
     private String phone;
-    private String name;
+    private String username;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "security_user_details_id")

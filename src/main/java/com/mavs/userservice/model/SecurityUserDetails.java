@@ -1,5 +1,7 @@
 package com.mavs.userservice.model;
 
+import com.google.common.collect.Sets;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -8,6 +10,7 @@ import java.util.Set;
 
 @Data
 @Entity
+@Builder
 @Table(name = "security_user_details")
 public class SecurityUserDetails implements UserDetails {
 
@@ -18,11 +21,18 @@ public class SecurityUserDetails implements UserDetails {
     @ElementCollection(targetClass = Authority.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_details_authorities", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
-    private Set<Authority> authorities;
+
+    @Builder.Default
+    private Set<Authority> authorities = Sets.newHashSet(Authority.ROLE_USER);
     private String password;
     private String username;
-    private boolean accountNonExpired;
-    private boolean accountNonLocked;
-    private boolean credentialsNonExpired;
-    private boolean enabled;
+
+    @Builder.Default
+    private boolean accountNonExpired = Boolean.TRUE;
+    @Builder.Default
+    private boolean accountNonLocked = Boolean.TRUE;
+    @Builder.Default
+    private boolean credentialsNonExpired = Boolean.TRUE;
+    @Builder.Default
+    private boolean enabled = Boolean.TRUE;
 }

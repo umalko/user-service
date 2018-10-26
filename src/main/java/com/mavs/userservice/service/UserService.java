@@ -1,5 +1,6 @@
 package com.mavs.userservice.service;
 
+import com.mavs.userservice.controller.dto.RegisterUserDto;
 import com.mavs.userservice.model.User;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public interface UserService {
 
     Optional<User> findByName(String name);
 
-    Optional<User> save(User user);
+    Optional<User> registerNewUser(RegisterUserDto user);
 
     void update(User user);
 

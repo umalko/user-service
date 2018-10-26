@@ -1,6 +1,9 @@
 package com.mavs.userservice.service.impl;
 
 import com.google.common.collect.Lists;
+import com.mavs.userservice.controller.dto.RegisterUserDto;
+import com.mavs.userservice.exception.ResourceWasNotSavedException;
+import com.mavs.userservice.model.SecurityUserDetails;
 import com.mavs.userservice.model.User;
 import com.mavs.userservice.repository.UserRepository;
 import com.mavs.userservice.service.UserService;
@@ -38,11 +41,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> findByName(String name) {
-        return userRepository.findByName(name);
+        return userRepository.findByUsername(name);
     }
 
     @Override
-    public Optional<User> save(User user) {
+    public Optional<User> registerNewUser(RegisterUserDto registerUserDto) {
+        if (userRepository.findByUsername(registerUserDto.getUsername()).isPresent()) {
+            throw new ResourceWasNotSavedException();
+        }
+
+        User user = User.builder()
+                .email(registerUserDto.getEmail())
+                .username(registerUserDto.getUsername())
+                .securityUserDetails(
+                        SecurityUserDetails.builder()
+                                .username(registerUserDto.getUsername())
+                                .password(registerUserDto.getPassword())
+                                .build()).build();
         return Optional.of(userRepository.save(user));
     }
 

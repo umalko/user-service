@@ -2,7 +2,6 @@ package com.mavs.userservice.controller;
 
 import com.google.common.base.Preconditions;
 import com.mavs.userservice.exception.ResourceNotFoundException;
-import com.mavs.userservice.exception.ResourceWasNotSavedException;
 import com.mavs.userservice.model.User;
 import com.mavs.userservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +30,6 @@ public class UserController {
     @GetMapping("/username/{username}")
     public User findByName(@PathVariable("username") String username) {
         return userService.findByName(username).orElseThrow(ResourceNotFoundException::new);
-    }
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public User save(@RequestBody User user) {
-        Preconditions.checkNotNull(user);
-        return userService.save(user).orElseThrow(ResourceWasNotSavedException::new);
     }
 
     @PutMapping
