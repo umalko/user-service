@@ -6,23 +6,33 @@
 //import org.junit.Before;
 //import org.junit.Test;
 //import org.junit.runner.RunWith;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 //import org.springframework.boot.test.context.SpringBootTest;
 //import org.springframework.boot.web.server.LocalServerPort;
 //import org.springframework.http.HttpStatus;
 //import org.springframework.http.MediaType;
 //import org.springframework.test.context.ActiveProfiles;
 //import org.springframework.test.context.junit4.SpringRunner;
+//import org.springframework.test.web.servlet.MockMvc;
+//import org.springframework.test.web.servlet.ResultActions;
+//import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 //
 //import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 //import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 //import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 //import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 //
 //
 //@RunWith(SpringRunner.class)
 //@ActiveProfiles("test")
-//@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+//@SpringBootTest
+//@AutoConfigureMockMvc
 //public class UserControllerTest {
+//
+//    @Autowired
+//    private MockMvc mockMvc;
 //
 //    @LocalServerPort
 //    private int port;
@@ -38,7 +48,8 @@
 //    }
 //
 //    @Test
-//    public void whenFindAllUsers_thenOK() {
+//    public void whenFindAllUsers_thenOK() throws Exception {
+//        ResultActions perform = mockMvc.perform(get(""));
 //        Response response = RestAssured.get(apiUrl);
 //        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK.value());
 //    }
