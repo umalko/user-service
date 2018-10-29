@@ -8,6 +8,7 @@ import com.mavs.userservice.model.User;
 import com.mavs.userservice.repository.UserRepository;
 import com.mavs.userservice.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.jasypt.util.password.BasicPasswordEncryptor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -56,9 +57,14 @@ public class UserServiceImpl implements UserService {
                 .securityUserDetails(
                         SecurityUserDetails.builder()
                                 .username(registerUserDto.getUsername())
-                                .password(registerUserDto.getPassword())
+                                .password(encryptPassword(registerUserDto.getPassword()))
                                 .build()).build();
         return Optional.of(userRepository.save(user));
+    }
+
+    @Override
+    public boolean isUserPasswordValid(String userPassword, String encryptedPassword) {
+        return new BasicPasswordEncryptor().checkPassword(userPassword, encryptedPassword);
     }
 
     @Override
@@ -72,5 +78,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Integer id) {
         userRepository.deleteById(id);
+    }
+
+    private String encryptPassword(String password) {
+        return new BasicPasswordEncryptor().encryptPassword(password);
     }
 }

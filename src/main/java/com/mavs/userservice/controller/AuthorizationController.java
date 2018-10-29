@@ -26,8 +26,8 @@ public class AuthorizationController {
     public ResponseEntity login(@RequestBody @Valid LoginUserInfoDto loginUserInfoDto, BindingResult result) {
         if (!result.hasErrors()) {
             Optional<User> loginUser = userService.findByName(loginUserInfoDto.getUsername());
-            if (loginUser.isPresent() && loginUserInfoDto.getPassword()
-                    .equals(loginUser.get().getSecurityUserDetails().getPassword())) {
+            if (loginUser.isPresent() && userService.isUserPasswordValid(loginUserInfoDto.getPassword(),
+                    loginUser.get().getSecurityUserDetails().getPassword())) {
                 return ResponseEntity.ok("User was logged in!");
             }
             return ResponseEntity.notFound().build();

@@ -16,6 +16,8 @@ public interface UserService {
 
     Optional<User> registerNewUser(RegisterUserDto user);
 
+    boolean isUserPasswordValid(String userPassword, String encryptedPassword);
+
     void update(User user);
 
     void delete(Integer id);
