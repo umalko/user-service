@@ -23,7 +23,7 @@ public class SecurityUserDetails implements UserDetails {
     @Enumerated(EnumType.STRING)
 
     @Builder.Default
-    private Set<Authority> authorities = Sets.newHashSet(Authority.ROLE_USER);
+    private Set<Authority> authorities = Sets.newHashSet(Authority.USER);
     private String password;
     private String username;
 

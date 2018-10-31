@@ -1,6 +1,6 @@
-package com.mavs.userservice.config;
+package com.mavs.userservice.config.auth;
 
-import com.google.common.collect.Lists;
+import com.mavs.userservice.model.Authority;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -11,14 +11,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy;
-import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 @Profile({"!test"})
 @Configuration
@@ -27,6 +23,9 @@ public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -37,25 +36,21 @@ public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
+                .exceptionHandling()
+                .authenticationEntryPoint(restAuthenticationEntryPoint)
+                .and()
                 .authorizeRequests()
                     .antMatchers("/swagger-ui.html").permitAll()
                     .antMatchers(HttpMethod.POST, "/auth/**").permitAll()
                     .anyRequest().authenticated()
+                    .antMatchers("/api/admin/**").hasRole(Authority.ADMIN.name())
                 .and()
-                    .logout().logoutUrl("/logout").invalidateHttpSession(Boolean.TRUE)
+                    .formLogin()
+                    .loginProcessingUrl("/auth/login")
+                    .successHandler(new AuthenticationSuccessHandler())
+                    .failureHandler(new SimpleUrlAuthenticationFailureHandler())
                 .and()
-                    .httpBasic()
-                .and()
-                .sessionManagement().sessionAuthenticationStrategy(sessionAuthenticationStrategy());
-    }
-
-    private SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-        SessionFixationProtectionStrategy strategy = new SessionFixationProtectionStrategy();
-        strategy.setMigrateSessionAttributes(Boolean.FALSE);
-
-        RegisterSessionAuthenticationStrategy authenticationStrategy = new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
-
-        return new CompositeSessionAuthenticationStrategy(Lists.newArrayList(strategy, authenticationStrategy));
+                    .logout().logoutUrl("/auth/logout").invalidateHttpSession(Boolean.TRUE);
     }
 
     private AuthenticationProvider getAuthenticationProvider() {
@@ -66,6 +61,6 @@ public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private PasswordEncoder getEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 }

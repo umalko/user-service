@@ -1,4 +1,4 @@
-package com.mavs.userservice.config;
+package com.mavs.userservice.config.auth;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;

@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jasypt.util.password.BasicPasswordEncryptor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -81,6 +82,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private String encryptPassword(String password) {
-        return new BasicPasswordEncryptor().encryptPassword(password);
+        return new BCryptPasswordEncoder().encode(password);
     }
 }
