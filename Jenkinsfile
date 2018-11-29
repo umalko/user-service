@@ -6,16 +6,33 @@ pipeline {
 
   }
   stages {
-    stage('Build') {
+    stage('Compile') {
       steps {
-        sh 'mvn clean package'
-        sh 'mvn test'
+        sh 'mvn clean compile'
+      }
+    }
+    stage('JUnit Test') {
+      parallel {
+        stage('JUnit Test') {
+          steps {
+            sh 'mvn test'
+          }
+        }
+        stage('Sonar Check') {
+          steps {
+            echo 'checked!'
+          }
+        }
+      }
+    }
+    stage('Package') {
+      steps {
         sh 'mvn install'
       }
     }
     stage('Deploy Dev') {
       steps {
-        echo 'hi!'
+        echo 'deployed!'
       }
     }
   }
