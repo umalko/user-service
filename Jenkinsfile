@@ -27,12 +27,12 @@ pipeline {
     }
     stage('Package') {
       steps {
-        sh 'mvn install'
+        sh 'mvn package'
       }
     }
     stage('Deploy Dev') {
       steps {
-        echo 'deployed!'
+        echo 'Started deploying to DEV landscape!'
       }
     }
   }
