@@ -6,9 +6,16 @@ pipeline {
 
   }
   stages {
-    stage('build') {
+    stage('Build') {
       steps {
-        sh 'mvn clean install'
+        sh 'mvn clean package'
+        sh 'mvn test'
+        sh 'mvn install'
+      }
+    }
+    stage('Deploy Dev') {
+      steps {
+        echo 'hi!'
       }
     }
   }
