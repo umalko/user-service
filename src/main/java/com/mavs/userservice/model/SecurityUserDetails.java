@@ -6,13 +6,14 @@ import lombok.Data;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 @Data
 @Entity
 @Builder
 @Table(name = "security_user_details")
-public class SecurityUserDetails implements UserDetails {
+public class SecurityUserDetails implements UserDetails, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

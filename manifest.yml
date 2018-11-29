@@ -1,7 +1,7 @@
 ---
 applications:
 - name: user-service
-  memory: 768M
+  memory: 750M
   instances: 1
   random-route: true
   services:
