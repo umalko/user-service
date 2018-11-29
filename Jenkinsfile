@@ -33,7 +33,7 @@ pipeline {
     stage('Deploy Dev') {
       steps {
         echo 'Started deploying to DEV landscape!'
-        pushToCloudFoundry(target: 'https://api.run.pivotal.io', organization: 'mavs-org', cloudSpace: 'development', credentialsId: 'pcf_dev_creds')
+        pushToCloudFoundry(target: 'https://api.run.pivotal.io', organization: 'mavs-org', cloudSpace: 'development', credentialsId: 'pcfdev_user')
       }
     }
   }
