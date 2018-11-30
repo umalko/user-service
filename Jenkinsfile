@@ -33,9 +33,10 @@ pipeline {
     stage('Deploy Dev') {
       steps {
         echo 'Started deploying to DEV landscape!'
-        timeout(time: 200, unit: 'SECONDS') {
-          pushToCloudFoundry(target: 'https://api.run.pivotal.io', organization: 'mavs-org', cloudSpace: 'development', credentialsId: 'pcfdev_user')
+        timeout(time: 30, unit: 'MINUTES', activity: true) {
+          pushToCloudFoundry(target: 'https://api.run.pivotal.io', organization: 'mavs-org', cloudSpace: 'development', credentialsId: 'pcfdev_user', pluginTimeout: '99999999999999')
         }
+
         echo 'deployed to DEV landscape!'
       }
     }
