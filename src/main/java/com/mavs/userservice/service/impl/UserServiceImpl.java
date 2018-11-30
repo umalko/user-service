@@ -7,6 +7,7 @@ import com.mavs.userservice.exception.ResourceWasNotSavedException;
 import com.mavs.userservice.model.Authority;
 import com.mavs.userservice.model.SecurityUserDetails;
 import com.mavs.userservice.model.User;
+import com.mavs.userservice.provider.MessageQueueProvider;
 import com.mavs.userservice.repository.UserRepository;
 import com.mavs.userservice.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +28,11 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final MessageQueueProvider messageQueueProvider;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, MessageQueueProvider messageQueueProvider) {
         this.userRepository = userRepository;
+        this.messageQueueProvider = messageQueueProvider;
     }
 
     @Override
@@ -55,16 +58,11 @@ public class UserServiceImpl implements UserService {
             throw new ResourceWasNotSavedException();
         }
 
-        User user = User.builder()
-                .email(registerUserDto.getEmail())
-                .username(registerUserDto.getUsername())
-                .securityUserDetails(
-                        SecurityUserDetails.builder()
-                                .username(registerUserDto.getUsername())
-                                .password(encryptPassword(registerUserDto.getPassword()))
-                                .authorities(Sets.newHashSet(Authority.USER, Authority.ADMIN))
-                                .build()).build();
-        return Optional.of(userRepository.save(user));
+        User user = transformToUser(registerUserDto);
+        User savedUser = userRepository.save(user);
+
+        messageQueueProvider.sendToUserTopic(savedUser);
+        return Optional.of(savedUser);
     }
 
     @Override
@@ -90,5 +88,17 @@ public class UserServiceImpl implements UserService {
     private String encryptPassword(String password) {
         return password;
 //        return new BCryptPasswordEncoder().encode(password);
+    }
+
+    private User transformToUser(RegisterUserDto registerUserDto) {
+        return User.builder()
+                .email(registerUserDto.getEmail())
+                .username(registerUserDto.getUsername())
+                .securityUserDetails(
+                        SecurityUserDetails.builder()
+                                .username(registerUserDto.getUsername())
+                                .password(encryptPassword(registerUserDto.getPassword()))
+                                .authorities(Sets.newHashSet(Authority.USER, Authority.ADMIN))
+                                .build()).build();
     }
 }

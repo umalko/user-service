@@ -2,18 +2,3 @@
 spring:
   application:
     name: user-service
-
-management:
-  security:
-    enabled: false
-
-
-logging:
-  level:
-    org:
-      hibernate:
-        SQL: DEBUG
-        type:
-          descriptor:
-            sql:
-              BasicBinder:  TRACE
