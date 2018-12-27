@@ -3,6 +3,7 @@ package com.mavs.userservice.config.auth.oauth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -25,9 +26,12 @@ import org.springframework.security.oauth2.provider.request.DefaultOAuth2Request
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
+@Profile("!test")
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private static final String REALM_NAME = "CRM_REALM";
 
     @Autowired
     private ClientDetailsService clientDetailsService;
@@ -54,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic()
-                .realmName("CRM_REALM");
+                .realmName(REALM_NAME);
     }
 
 

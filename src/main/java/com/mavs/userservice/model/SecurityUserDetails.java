@@ -9,6 +9,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
 
+import static java.lang.Boolean.*;
+
 @Data
 @Entity
 @Builder
@@ -29,11 +31,11 @@ public class SecurityUserDetails implements UserDetails, Serializable {
     private String username;
 
     @Builder.Default
-    private boolean accountNonExpired = Boolean.TRUE;
+    private boolean accountNonExpired = TRUE;
     @Builder.Default
-    private boolean accountNonLocked = Boolean.TRUE;
+    private boolean accountNonLocked = TRUE;
     @Builder.Default
-    private boolean credentialsNonExpired = Boolean.TRUE;
+    private boolean credentialsNonExpired = TRUE;
     @Builder.Default
-    private boolean enabled = Boolean.TRUE;
+    private boolean enabled = TRUE;
 }
