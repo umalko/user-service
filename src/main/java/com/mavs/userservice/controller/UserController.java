@@ -1,5 +1,7 @@
 package com.mavs.userservice.controller;
 
+import com.google.common.base.Preconditions;
+import com.mavs.userservice.controller.dto.RegisterUserDto;
 import com.mavs.userservice.controller.dto.UserDto;
 import com.mavs.userservice.exception.ResourceNotFoundException;
 import com.mavs.userservice.model.User;
@@ -7,11 +9,11 @@ import com.mavs.userservice.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,20 +48,29 @@ public class UserController {
         return transformUserOptionalModelToDto(userService.findByEmail(email));
     }
 
+    @PostMapping()
+    public String register(@RequestBody @Valid RegisterUserDto registerUserDto, BindingResult result) {
+        if (!result.hasErrors()) {
+            userService.save(registerUserDto);
+            return "User was created";
+        }
+        return "User wasn't created! Wrong params!";
+    }
+
     // TODO: add new activity UPDATE_USER
-//    @PutMapping
-//    @ResponseStatus(HttpStatus.OK)
-//    public void update(@RequestBody User user) {
-//        Preconditions.checkNotNull(user);
-//        userService.update(user);
-//    }
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    public void update(@RequestBody User user) {
+        Preconditions.checkNotNull(user);
+        userService.update(user);
+    }
 
     // TODO: add new activity DELETE_USER
-//    @DeleteMapping("/{id}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public void delete(@PathVariable("id") Integer id) {
-//        userService.delete(id);
-//    }
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void delete(@PathVariable("id") Integer id) {
+        userService.delete(id);
+    }
 
     private UserDto transformUserModelToDto(User user) {
         return UserDto.builder()

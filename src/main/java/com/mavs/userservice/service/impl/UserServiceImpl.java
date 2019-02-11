@@ -1,16 +1,20 @@
 package com.mavs.userservice.service.impl;
 
 import com.google.common.collect.Lists;
+import com.mavs.userservice.controller.dto.RegisterUserDto;
 import com.mavs.userservice.controller.dto.UserDto;
 import com.mavs.userservice.exception.ResourceWasNotSavedException;
 import com.mavs.userservice.model.User;
 import com.mavs.userservice.repository.UserRepository;
+import com.mavs.userservice.service.AuthActivityService;
 import com.mavs.userservice.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -23,9 +27,14 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final AuthActivityService authActivityService;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    @Autowired
+    private BCryptPasswordEncoder encoder;
+
+    public UserServiceImpl(UserRepository userRepository, AuthActivityService authActivityService) {
         this.userRepository = userRepository;
+        this.authActivityService = authActivityService;
     }
 
     @Override
@@ -56,6 +65,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> save(RegisterUserDto registerUserDto) {
+        if (userRepository.findByUsername(registerUserDto.getUsername()).isPresent() ||
+                userRepository.findByEmail(registerUserDto.getEmail()).isPresent()) {
+            throw new ResourceWasNotSavedException();
+        }
+
+        User savedUser = userRepository.save(transformRegisteredUserDtoToUser(registerUserDto));
+        authActivityService.processNewUserActivities(savedUser);
+        return Optional.of(savedUser);
+    }
+
+    @Override
     @CachePut(value = "users", key = "#user.id", unless = "#result == null")
     public void update(User user) {
         userRepository.findById(user.getId()).ifPresent(dbUser -> {
@@ -80,6 +101,14 @@ public class UserServiceImpl implements UserService {
                 .email(userDto.getEmail())
                 .username(userDto.getUsername())
                 .phone(userDto.getPhone())
+                .build();
+    }
+
+    private User transformRegisteredUserDtoToUser(RegisterUserDto registerUserDto) {
+        return User.builder()
+                .email(registerUserDto.getEmail())
+                .username(registerUserDto.getUsername())
+                .password(encoder.encode(registerUserDto.getPassword()))
                 .build();
     }
 }
