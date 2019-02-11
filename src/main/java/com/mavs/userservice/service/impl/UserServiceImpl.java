@@ -1,17 +1,12 @@
 package com.mavs.userservice.service.impl;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.mavs.userservice.controller.dto.RegisterUserDto;
+import com.mavs.userservice.controller.dto.UserDto;
 import com.mavs.userservice.exception.ResourceWasNotSavedException;
-import com.mavs.userservice.model.Authority;
-import com.mavs.userservice.model.SecurityUserDetails;
 import com.mavs.userservice.model.User;
-import com.mavs.userservice.provider.MessageQueueProvider;
 import com.mavs.userservice.repository.UserRepository;
 import com.mavs.userservice.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.jasypt.util.password.BasicPasswordEncryptor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -28,11 +23,9 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final MessageQueueProvider messageQueueProvider;
 
-    public UserServiceImpl(UserRepository userRepository, MessageQueueProvider messageQueueProvider) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.messageQueueProvider = messageQueueProvider;
     }
 
     @Override
@@ -53,21 +46,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> registerNewUser(RegisterUserDto registerUserDto) {
-        if (userRepository.findByUsername(registerUserDto.getUsername()).isPresent()) {
+    public Optional<User> save(UserDto userDto) {
+        if (userRepository.findByUsername(userDto.getUsername()).isPresent()) {
             throw new ResourceWasNotSavedException();
         }
-
-        User user = transformToUser(registerUserDto);
+        User user = transformToUser(userDto);
         User savedUser = userRepository.save(user);
-
-        messageQueueProvider.sendToUserTopic(savedUser);
         return Optional.of(savedUser);
-    }
-
-    @Override
-    public boolean isUserPasswordValid(String userPassword, String encryptedPassword) {
-        return new BasicPasswordEncryptor().checkPassword(userPassword, encryptedPassword);
     }
 
     @Override
@@ -85,20 +70,16 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userId);
     }
 
-    private String encryptPassword(String password) {
-        return password;
-//        return new BCryptPasswordEncoder().encode(password);
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
-    private User transformToUser(RegisterUserDto registerUserDto) {
+    private User transformToUser(UserDto userDto) {
         return User.builder()
-                .email(registerUserDto.getEmail())
-                .username(registerUserDto.getUsername())
-                .securityUserDetails(
-                        SecurityUserDetails.builder()
-                                .username(registerUserDto.getUsername())
-                                .password(encryptPassword(registerUserDto.getPassword()))
-                                .authorities(Sets.newHashSet(Authority.USER, Authority.ADMIN))
-                                .build()).build();
+                .email(userDto.getEmail())
+                .username(userDto.getUsername())
+                .phone(userDto.getPhone())
+                .build();
     }
 }

@@ -1,6 +1,6 @@
 package com.mavs.userservice.service;
 
-import com.mavs.userservice.controller.dto.RegisterUserDto;
+import com.mavs.userservice.controller.dto.UserDto;
 import com.mavs.userservice.model.User;
 
 import java.util.List;
@@ -14,11 +14,11 @@ public interface UserService {
 
     Optional<User> findByName(String name);
 
-    Optional<User> registerNewUser(RegisterUserDto user);
-
-    boolean isUserPasswordValid(String userPassword, String encryptedPassword);
+    Optional<User> save(UserDto userDto);
 
     void update(User user);
 
     void delete(Integer id);
+
+    Optional<User> findByEmail(String email);
 }

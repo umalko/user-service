@@ -23,8 +23,4 @@ public class User implements Serializable {
     private String phone;
     private String username;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "security_user_details_id")
-    private SecurityUserDetails securityUserDetails;
-
 }

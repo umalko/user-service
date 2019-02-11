@@ -49,30 +49,14 @@
             <artifactId>spring-cloud-services-starter-config-client</artifactId>
         </dependency>
 
-        <!--<dependency>-->
-        <!--<groupId>org.springframework.cloud</groupId>-->
-        <!--<artifactId>spring-cloud-starter-config</artifactId>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>io.pivotal.spring.cloud</groupId>
             <artifactId>spring-cloud-services-starter-service-registry</artifactId>
         </dependency>
 
-        <!--<dependency>-->
-        <!--<groupId>io.pivotal.spring.cloud</groupId>-->
-        <!--<artifactId>spring-cloud-services-starter-circuit-breaker</artifactId>-->
-        <!--</dependency>-->
-
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <type>jar</type>
         </dependency>
 
         <dependency>
@@ -142,7 +126,6 @@
             <version>2.0.0</version>
         </dependency>
 
-
         <!-- security OAuth -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -160,6 +143,13 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+        <!-- custom libs -->
+        <dependency>
+            <groupId>com.mavs</groupId>
+            <artifactId>activity-lib</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
     </dependencies>
