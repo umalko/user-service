@@ -1,6 +1,7 @@
 package com.mavs.userservice.repository;
 
 import com.mavs.userservice.model.User;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTest
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = NONE)
 @SpringBootTest
+@Ignore
 public class UserRepositoryTest {
 
     @Autowired
