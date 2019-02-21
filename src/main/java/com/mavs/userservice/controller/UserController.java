@@ -1,8 +1,8 @@
 package com.mavs.userservice.controller;
 
 import com.google.common.base.Preconditions;
+import com.mavs.common.dto.UserDto;
 import com.mavs.userservice.controller.dto.RegisterUserDto;
-import com.mavs.userservice.controller.dto.UserDto;
 import com.mavs.userservice.exception.ResourceNotFoundException;
 import com.mavs.userservice.model.User;
 import com.mavs.userservice.service.UserService;

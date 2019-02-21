@@ -1,8 +1,8 @@
 package com.mavs.userservice.service.impl;
 
 import com.google.common.collect.Lists;
+import com.mavs.common.dto.UserDto;
 import com.mavs.userservice.controller.dto.RegisterUserDto;
-import com.mavs.userservice.controller.dto.UserDto;
 import com.mavs.userservice.exception.ResourceWasNotSavedException;
 import com.mavs.userservice.model.User;
 import com.mavs.userservice.repository.UserRepository;

@@ -1,6 +1,6 @@
 package com.mavs.userservice.controller;
 
-import com.mavs.userservice.controller.dto.UserDto;
+import com.mavs.common.dto.UserDto;
 import com.mavs.userservice.model.User;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;

@@ -1,7 +1,7 @@
 package com.mavs.userservice.service;
 
+import com.mavs.common.dto.UserDto;
 import com.mavs.userservice.controller.dto.RegisterUserDto;
-import com.mavs.userservice.controller.dto.UserDto;
 import com.mavs.userservice.model.User;
 
 import java.util.List;
